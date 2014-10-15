@@ -1,0 +1,284 @@
+<!DOCTYPE>
+
+<html>
+
+<head>
+  <title> Life Drawing Proto 8</title>
+  <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+
+
+
+
+  <script>
+
+
+
+
+
+
+
+
+
+
+
+  // box expansion script, Make the code re-usable
+
+      var i = 0; //global scope
+
+
+   window.onload = function(){ //anonymous function
+   var setHeight = document.getElementById("subject");
+    var pHidden = document.getElementById("storyP");
+
+	pHidden.style.visibility="hidden";
+
+   setHeight.style.height="18px";
+
+   };
+
+
+   var expand = function(){
+
+   var setHeight = document.getElementById("subject");
+   setHeight.style.height="";
+   var pHidden = document.getElementById("storyP");
+   var check = pHidden.innerHTML;
+
+
+
+  var rollout = setInterval(function(){iter()},5); //global scope
+
+
+
+
+   function iter(){
+   i++;
+
+   pHidden.style.visibility="visible";
+   pHidden.innerHTML=check.substring(0,i);
+   var characters = check.length;
+   if(characters===i){
+   //alert(characters);
+   clearInterval(rollout);
+   i=0;
+   }
+
+   };
+
+
+
+
+   };
+
+    var contract = function(){
+
+
+	var setHeight = document.getElementById("subject");
+   setHeight.style.height="18px";
+   var pHidden = document.getElementById("storyP");
+   pHidden.style.visibility="hidden";
+
+
+   };
+
+
+
+
+</script>
+
+
+ <script>
+
+
+
+var count = 0;
+
+var previous = [];
+var imageViewer = function(scroll){
+
+
+
+if(scroll===true){
+count--;
+}
+if(scroll===false){
+count++;
+}
+
+
+
+    previous.push(count);
+
+   // alert(count); //get this count and previous logic system nailed first.
+//alert(previous[previous.length-2]);
+
+    var img = []; //literal notation, oppose to the constructor notation.
+
+	//perhaps the visiblity:hidden doesn't work the same with images as it does with text, the image still occupies the space whilst invisible.
+/*
+    img[0] = document.images[0];
+    img[1] = document.images[1];
+    img[2] = document.images[2];
+    img[3] = document.images[3];
+    img[4] = document.images[4];
+    img[5] = document.images[5];
+    img[6] = document.images[6];
+    img[7] = document.images[7];
+    img[8] = document.images[8];
+    img[9] = document.images[9];
+*/
+
+        img[0] = '../life-drawings/20141002155505_001.jpg';
+        img[1] = '../life-drawings/20141002155611_001.jpg';
+        img[2] = '../life-drawings/20141002155658_001.jpg';
+        img[3] = '../life-drawings/20141002155735_001.jpg';
+        img[4] = '../life-drawings/20141002155816_001.jpg';
+	     	img[5] = '../life-drawings/20141002155847_001.jpg';
+        img[6] = '../life-drawings/20141002155947_001.jpg';
+        img[7] = '../life-drawings/20141002160021_001.jpg';
+        img[8] = '../life-drawings/20141002160122_001.jpg';
+
+
+
+var targetLeft = document.getElementById("image-left");
+var targetRight = document.getElementById("image-right");
+
+var cycle = document.getElementById("scan");
+var currentImage = cycle.src=img[count];
+
+cycle.style.width='100%';
+cycle.style.height='100%';
+cycle.style.visibility='visible';
+
+
+
+//targetRight.appendChild(currentImage);
+targetLeft.appendChild(currentImage);
+
+/*
+if(count>0){
+img[previous.length-2].style.visiblity='hidden';
+targetLeft.removeChild(img[previous.length-2]);
+}
+*/
+
+//targetLeft.appendChild(img[count+1]);
+//cycle.src=img[count];
+//targetLeft.src=img[count];
+
+//targetLeft.appendChild(img[count]);
+
+
+
+
+//return;
+
+
+};
+
+
+
+
+  </script>
+
+
+</head>
+
+<body onLoad="imageViewer();">
+
+
+
+ <div id="header">
+   <div id="logo"> <canvas height="100" width="100" id="book"> Sorry, your browser is not supported. </canvas> </div>
+     <div id="subject" onClick="expand();" onmouseout="contract();">
+       <P id="storyH"><em>Life Drawing Archive</em> </p>
+       <p id="storyP">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut orci magna. Morbi ac turpis mi. Aenean velit neque, ullamcorper quis volutpat molestie, facilisis id tellus. </p>
+     </div>
+     <div class="arrow-down"></div>
+ </div>
+
+  <div id="images">
+
+
+
+
+
+
+  <div id="image-left">
+   <!--<img class="scan" />--> <!-- if i declared the images inside the script this could be the more appropriate way. -->
+         <img id="scan" />
+  </div>
+
+  <div id="image-right">
+   <img id="scan" />
+  </div>
+   <!--   <div id="clear"> </div> --> <!-- needed -->
+
+
+  <!-- scans - shall i compress the images and save as png's?
+
+  20141002155505_001.jpg
+20141002155611_001.jpg
+20141002155658_001.jpg
+20141002155735_001.jpg
+20141002155816_001.jpg
+20141002155847_001.jpg
+20141002155947_001.jpg
+20141002160021_001.jpg
+20141002160122_001.jpg
+
+-->
+
+
+
+     <div id="nav-left">
+        <div class="arrow-right" onClick="imageViewer(false);"></div>
+      </div>
+
+     <div id="nav-right">
+        <div class="arrow-left" onClick="imageViewer(true);"></div>
+     </div>
+
+  </div>
+
+ <footer>
+ <p>
+ Christopher P.K. Morris
+ </p>
+ </footer>
+
+
+
+
+
+    <script>
+ //note: we load the canvas script at the bottom of the body so the JavaScript -
+ //can be run without any asynchronous event calling.
+ //alert("heyyy");
+
+ /*
+
+
+var c = document.getElementById("book");
+var ctx = c.getContext("2d");
+//ctx.fillStyle = "#FF0000";
+//ctx.fillRect(2,40,40,35);
+//c.style.background="#111";
+ctx.beginPath();
+ctx.moveTo(20,20);
+ctx.lineTo(45,35);
+ctx.lineTo(25,35);
+ctx.lineTo(05,45);
+ctx.lineTo(15,35);
+ctx.strokeStyle="#FF6600";
+ctx.stroke();
+
+*/
+
+ </script>
+
+</body>
+
+
+
+</html>
