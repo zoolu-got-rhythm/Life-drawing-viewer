@@ -3,22 +3,15 @@
 <html>
 
 <head>
-  <title> Life Drawing Proto 8</title>
-  <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+  <title> Life Drawing Proto 10</title>
+  <link rel="stylesheet" type="text/css" href="lifedrawer.css" />
 
 
 
 
   <script>
 
-
-
-
-
-
-
-
-
+ //alert(screen.width+""+screen.height);
 
 
   // box expansion script, Make the code re-usable
@@ -26,9 +19,20 @@
       var i = 0; //global scope
 
 
+ var closeViewer = function(){
+   var minimize = document.getElementById("container");
+   minimize.style.visibility='hidden'; //on client side styling use single quotations.
+
+   var hideImg = document.getElementById("scan");
+   hideImg.style.visibility='hidden';
+
+ };
+
+
    window.onload = function(){ //anonymous function
    var setHeight = document.getElementById("subject");
     var pHidden = document.getElementById("storyP");
+
 
 	pHidden.style.visibility="hidden";
 
@@ -94,6 +98,8 @@
 var count = 0;
 
 var previous = [];
+
+var img = []; //literal notation, oppose to the constructor notation.
 var imageViewer = function(scroll){
 
 
@@ -112,7 +118,7 @@ count++;
    // alert(count); //get this count and previous logic system nailed first.
 //alert(previous[previous.length-2]);
 
-    var img = []; //literal notation, oppose to the constructor notation.
+
 
 	//perhaps the visiblity:hidden doesn't work the same with images as it does with text, the image still occupies the space whilst invisible.
 /*
@@ -141,43 +147,124 @@ count++;
 
 
 var targetLeft = document.getElementById("image-left");
-var targetRight = document.getElementById("image-right");
+//var targetRight = document.getElementById("image-right");
 
 var cycle = document.getElementById("scan");
+//var cycle2 = document.getElementById("scan2");
+
 var currentImage = cycle.src=img[count];
+//var currentImage2 = cycle2.src=img[count+1];
+
 
 cycle.style.width='100%';
 cycle.style.height='100%';
 cycle.style.visibility='visible';
 
+cycle2.style.width='100%';
+cycle2.style.height='100%';
+cycle2.style.visibility='visible';
 
-
+//responsive change
+//if((window.screen.width<=1080)&(window.screen.height<=768)){
 //targetRight.appendChild(currentImage);
 targetLeft.appendChild(currentImage);
+//targetRight.appendChild(currentImage2);
+//}
+/*else{
 
-/*
-if(count>0){
-img[previous.length-2].style.visiblity='hidden';
-targetLeft.removeChild(img[previous.length-2]);
-}
-*/
+  targetLeft.appendChild(currentImage);
+  targetRight.appendChild(cycle.src = img[count+1]);
 
-//targetLeft.appendChild(img[count+1]);
-//cycle.src=img[count];
-//targetLeft.src=img[count];
+} */
 
-//targetLeft.appendChild(img[count]);
-
-
-
-
-//return;
-
+//responsive change end
 
 };
 
 
 
+
+
+
+
+
+<!--
+var amount = setInterval(function(){indicators()},700);
+
+function indicators(){
+
+var fire = setInterval(function(){incro()},50);
+
+var collect = []; //global scope, closed functions?
+
+function incro(){
+var i = 0;
+
+
+//while(i<10){
+i++;
+//document.getElementById("count").innerHTML=collect.length;
+collect.push(i)
+
+var spawn = document.createElement("div"); //.setAttribute("id","imageCube");
+spawn.style.width="10px";
+spawn.style.height="10px";
+spawn.style.cssFloat="left";
+spawn.style.backgroundColor="#D65CFF";
+spawn.style.margin="10px";
+document.getElementById("indicator").appendChild(spawn);
+
+var highlight = function(){
+
+
+var dad = document.getElementById("indicator");
+
+if (dad.hasChildNodes()) {
+  // So, first we check if the object is not empty, if the object has child nodes
+  var children = dad.childNodes;
+
+  for (var i = 0; i < children.length; i++) {
+    // do something with each child as children[i]
+    // NOTE: List is live, Adding or removing children will change the list
+    dad.childNodes[i].style.height="30px";
+  }
+}
+
+
+};
+
+//write an if statement of some kind by here to manipulate an a chosen litle square.
+
+
+
+
+if(collect.length===img.length-1){ //add document.images.length in the condition.
+//  var dad = document.getElementById("indicator");
+  //dad.firstChild.style.height="20xp";
+clearInterval(fire);
+clearInterval(amount);
+
+var dad = document.getElementById("indicator");
+dad.children[i].style.height="30px";
+spawn.style.height="30px";
+
+
+
+/*
+while(dad.firstChild===img.length){ //keeps going for the length of the child divs that we're created.
+  dad.removeChild(dad.firstChild);
+  collect.length = 0;
+  i = 0;
+}
+*/
+
+}
+
+};
+
+}; //end of indicators function
+
+//-->
 
   </script>
 
@@ -186,16 +273,17 @@ targetLeft.removeChild(img[previous.length-2]);
 
 <body onLoad="imageViewer();">
 
+<div id="container">
+  <div id="exit" onClick="closeViewer();"> </div>
 
+<div id="header">
 
- <div id="header">
-   <div id="logo"> <canvas height="100" width="100" id="book"> Sorry, your browser is not supported. </canvas> </div>
      <div id="subject" onClick="expand();" onmouseout="contract();">
        <P id="storyH"><em>Life Drawing Archive</em> </p>
        <p id="storyP">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut orci magna. Morbi ac turpis mi. Aenean velit neque, ullamcorper quis volutpat molestie, facilisis id tellus. </p>
      </div>
      <div class="arrow-down"></div>
- </div>
+</div>
 
   <div id="images">
 
@@ -209,9 +297,6 @@ targetLeft.removeChild(img[previous.length-2]);
          <img id="scan" />
   </div>
 
-  <div id="image-right">
-   <img id="scan" />
-  </div>
    <!--   <div id="clear"> </div> --> <!-- needed -->
 
 
@@ -230,7 +315,7 @@ targetLeft.removeChild(img[previous.length-2]);
 -->
 
 
-
+<!--Make these buttons for good semantics-->
      <div id="nav-left">
         <div class="arrow-right" onClick="imageViewer(false);"></div>
       </div>
@@ -241,41 +326,21 @@ targetLeft.removeChild(img[previous.length-2]);
 
   </div>
 
+  <div id="indicator">
+  <!--cubes spawn based on the number of images-->
+  </div>
+<!--
  <footer>
  <p>
  Christopher P.K. Morris
  </p>
  </footer>
+-->
+
+</div>
 
 
 
-
-
-    <script>
- //note: we load the canvas script at the bottom of the body so the JavaScript -
- //can be run without any asynchronous event calling.
- //alert("heyyy");
-
- /*
-
-
-var c = document.getElementById("book");
-var ctx = c.getContext("2d");
-//ctx.fillStyle = "#FF0000";
-//ctx.fillRect(2,40,40,35);
-//c.style.background="#111";
-ctx.beginPath();
-ctx.moveTo(20,20);
-ctx.lineTo(45,35);
-ctx.lineTo(25,35);
-ctx.lineTo(05,45);
-ctx.lineTo(15,35);
-ctx.strokeStyle="#FF6600";
-ctx.stroke();
-
-*/
-
- </script>
 
 </body>
 
