@@ -46,106 +46,89 @@ var work = [
     name:9,
     info: "lorem ipsum 9",
     pic: "life-drawings/20141002155505_001.jpg"
-  },
+  }
 ];
-
-
-
-
-var i = 1;
 
 // pseudo code.
 
-function CurrentPicture(piece, direction){
+var Slider = {};
+
+Slider.switchPictureTo = function(piece) {
+  this.subject.innerHTML = piece.name;
+
+  // update current image
+  if (this.currentImage) {
+    this.picture.removeChild(this.currentImage);
+  }
+  this.currentImage = document.createElement("img");
+  this.currentImage.setAttribute("id", "image");
+  this.currentImage.setAttribute("class", "images");
+  this.currentImage.setAttribute("src", piece.pic);
+  this.picture.appendChild(this.currentImage);
+};
 
 
-  var insertImage = document.getElementById("picture");
+Slider.init = function(container, pictures) {
+  var left = document.createElement("button");
+  var right = document.createElement("button");
+  var arrow = document.createElement("div");
+  var subject = document.createElement("div");
+  var frame = document.createElement("div");
+  var picture = document.createElement("div");
 
-  if( insertImage.children.length > 0 ){
-    while ( insertImage.firstChild ) {
-      var imageNode = insertImage.firstChild;
-      insertImage.removeChild(imageNode);
+  this.picture = picture;
+  picture.setAttribute("class", "picture");
+  frame.appendChild(picture);
+
+  left.innerHTML = "left";
+  left.setAttribute("class", "left");
+  container.appendChild(left);
+  right.innerHTML = "right";
+  right.setAttribute("class", "right");
+  container.appendChild(right);
+  arrow.setAttribute("class", "arrow");
+  container.appendChild(arrow);
+  this.subject = subject;
+  subject.setAttribute("class", "subject");
+  container.appendChild(subject);
+  frame.setAttribute("class", "frame");
+  container.appendChild(frame);
+
+
+  var DEFAULT_PICTURE = 1;
+  var currentPictureIndex = 1;
+
+  this.switchPictureTo(pictures[currentPictureIndex]);
+
+  var self = this;
+
+  left.addEventListener("click",  function() {
+    if (0 === currentPictureIndex) {
+      currentPictureIndex = pictures.length - 1;
+    } else {
+      currentPictureIndex -= 1;
     }
+    self.switchPictureTo(pictures[currentPictureIndex]);
+    console.log(currentPictureIndex);
+  });
 
+  right.addEventListener("click", function() {
+    if (currentPictureIndex === pictures.length - 1) {
+      currentPictureIndex = 0;
+    } else {
+      currentPictureIndex += 1;
+    }
+    self.switchPictureTo(pictures[currentPictureIndex]);
+    console.log(currentPictureIndex);
+  });
 
-    console.log("remove pic");
-    console.log("there's " + insertImage.children.length + " image node currently here. ");
-  }
+  subject.addEventListener("click", function() {
+    currentPictureIndex = DEFAULT_PICTURE;
+    self.switchPictureTo(pictures[currentPictureIndex]);
+    console.log(pictures[currentPictureIndex]);
+  });
+};
 
-
-
-  var insert = document.getElementById("subject");
-  insert.innerHTML = piece.name;
-
-  // create and append image from data initialization
-  // can probably abstract this away.
-  var currentImage = document.createElement("img");
-  currentImage.classList.add("images");
-  currentImage.setAttribute("src", piece.pic);
-  insertImage.appendChild(currentImage);
-
-
-  if(i === 0){
-    i = 1;
-    return;
-  }
-
-
-  // incrementation and decrementation
-  if(direction === "up"){
-    i+=1;
-  }else{
-    i-=1;
-  }
-
-
-
-  // closure
-  return function(){
-    //insert.removeChild(childNode[0]);
-  //  insert.innerHTML = piece.info;
-    insert.innerHTML = work[i].info;
-  }
-}
-
-
-
-// this saves the argument at the moment it was passed
-// into memory.
-// var description = CurrentPicture(work[i]);
-
-// re-cap on closures.
-var description = CurrentPicture(work[i]);
-
-// if user clicks on title , call the closure.
-// description();
-
-// event target elements.
-var
-  left = document.getElementById("left"),
-  right = document.getElementById("right"),
-  head = document.getElementById("subject");
-
-left.addEventListener("click",
- function(){
-   CurrentPicture(work[i]);
-   console.log(i);
- }
- );
-
-right.addEventListener("click",
-  function(){
-    CurrentPicture(work[i], "up");
-    console.log(i);
-  }
-);
-
-head.addEventListener("click",
-  function(){
-    description();
-    console.log(i);
-  }
-);
-
+Slider.init(document.getElementById("container"), work);
 
 // add class link to stylesheet.

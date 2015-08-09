@@ -13,11 +13,9 @@ color: #333;
   border-radius: 50%;
   z-index: 2;
   /* border-bottom: 2px solid #555; */
-
-
 }
 
-#subject{
+.subject{
   width:250px;
   height: 25px;
   background: #eee;
@@ -25,11 +23,9 @@ color: #333;
   border-radius: 50%;
   text-align:center;
   border-bottom: 2px solid #aaa;
-
-
 }
 
-#arrow{
+.arrow{
   position: absolute;
   width:20px;
   height:20px;
@@ -39,7 +35,8 @@ color: #333;
   top:10px;
   z-index: -1;
 }
-#frame{
+
+.frame{
   width: 360px;
   height: 450px;
   background: #eee;
@@ -49,7 +46,7 @@ color: #333;
   border-radius: 50%;
 }
 
-#picture{
+.picture{
   background: #fff;
   width:340px;
   height:437px;
@@ -71,7 +68,7 @@ button{
   background:#eee;
 }
 
-#left{
+.left{
   position:absolute;
   left:-35px;
   top:100px;
@@ -79,7 +76,7 @@ button{
 
 }
 
-#right{
+.right{
   position:absolute;
   right:-35px;
   top:100px;
