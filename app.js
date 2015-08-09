@@ -1,7 +1,7 @@
 
 // data initialization:
 
-var work = [
+var art = [
   {
     name:1,
     info: "lorem ipsum 1",
@@ -51,24 +51,23 @@ var work = [
 
 // pseudo code.
 
-var Slider = {};
 
-Slider.switchPictureTo = function(piece) {
-  this.subject.innerHTML = piece.name;
-
-  // update current image
-  if (this.currentImage) {
-    this.picture.removeChild(this.currentImage);
+/**
+ * @param {Node} container
+ * @param {Object[]} pictures
+ * @param {number} [opt_defaultPictureIndex=0]
+ * @constructor
+ */
+function Slider(container, pictures, opt_defaultPictureIndex) {
+  if (-1 !== this.initialized.indexOf(container)) {
+    throw new Error("You cannot deploy Slider in the same container twice");
+  } else {
+    this.initialized.push(container);
   }
-  this.currentImage = document.createElement("img");
-  this.currentImage.setAttribute("id", "image");
-  this.currentImage.setAttribute("class", "images");
-  this.currentImage.setAttribute("src", piece.pic);
-  this.picture.appendChild(this.currentImage);
-};
 
+  this.container = container;
+  this.pictures = pictures;
 
-Slider.init = function(container, pictures) {
   var left = document.createElement("button");
   var right = document.createElement("button");
   var arrow = document.createElement("div");
@@ -95,40 +94,71 @@ Slider.init = function(container, pictures) {
   container.appendChild(frame);
 
 
-  var DEFAULT_PICTURE = 1;
-  var currentPictureIndex = 1;
+  this.defaultPictureIndex = opt_defaultPictureIndex || 0;
+  this.currentPictureIndex = this.defaultPictureIndex;
 
-  this.switchPictureTo(pictures[currentPictureIndex]);
-
-  var self = this;
-
-  left.addEventListener("click",  function() {
-    if (0 === currentPictureIndex) {
-      currentPictureIndex = pictures.length - 1;
-    } else {
-      currentPictureIndex -= 1;
-    }
-    self.switchPictureTo(pictures[currentPictureIndex]);
-    console.log(currentPictureIndex);
+  this.listeners = [
+    {element: left, fn: this.clickLeftHandler.bind(this)},
+    {element: right, fn: this.clickRightHandler.bind(this)},
+    {element: subject, fn: this.clickSubjectHandler.bind(this)}
+  ];
+  this.listeners.forEach(function(listener) {
+    listener.element.addEventListener("click", listener.fn);
   });
 
-  right.addEventListener("click", function() {
-    if (currentPictureIndex === pictures.length - 1) {
-      currentPictureIndex = 0;
-    } else {
-      currentPictureIndex += 1;
-    }
-    self.switchPictureTo(pictures[currentPictureIndex]);
-    console.log(currentPictureIndex);
-  });
+  this.switchPictureTo(pictures[this.currentPictureIndex]);
+}
 
-  subject.addEventListener("click", function() {
-    currentPictureIndex = DEFAULT_PICTURE;
-    self.switchPictureTo(pictures[currentPictureIndex]);
-    console.log(pictures[currentPictureIndex]);
-  });
+Slider.prototype.initialized = [];
+
+Slider.prototype.clickLeftHandler = function() {
+  if (0 === this.currentPictureIndex) {
+    this.currentPictureIndex = this.pictures.length - 1;
+  } else {
+    this.currentPictureIndex -= 1;
+  }
+  this.switchPictureTo(this.pictures[this.currentPictureIndex]);
+  console.log(this.currentPictureIndex);
 };
 
-Slider.init(document.getElementById("container"), work);
+Slider.prototype.clickRightHandler = function() {
+  if (this.currentPictureIndex === this.pictures.length - 1) {
+    this.currentPictureIndex = 0;
+  } else {
+    this.currentPictureIndex += 1;
+  }
+  this.switchPictureTo(this.pictures[this.currentPictureIndex]);
+  console.log(this.currentPictureIndex);
+};
+
+Slider.prototype.clickSubjectHandler = function() {
+  this.currentPictureIndex = this.defaultPictureIndex;
+  this.switchPictureTo(this.pictures[this.currentPictureIndex]);
+  console.log(this.pictures[this.currentPictureIndex]);
+};
+
+Slider.prototype.switchPictureTo = function(piece) {
+  this.subject.innerHTML = piece.name;
+
+  // update current image
+  if (this.currentImage) {
+    this.picture.removeChild(this.currentImage);
+  }
+  this.currentImage = document.createElement("img");
+  this.currentImage.setAttribute("class", "images");
+  this.currentImage.setAttribute("src", piece.pic);
+  this.picture.appendChild(this.currentImage);
+};
+
+Slider.prototype.destroy = function() {
+  this.listeners.forEach(function(listener) {
+    listener.element.removeEventListener("click", listener.fn);
+  });
+  this.container.innerHTML = "";
+  this.initialized.splice(this.initialized.indexOf(this.container), 1);
+};
+
+var slider_instance_one = new Slider(document.getElementById("container-first"), art, 1);
+var slider_instance_two = new Slider(document.getElementById("container-second"), art);
 
 // add class link to stylesheet.

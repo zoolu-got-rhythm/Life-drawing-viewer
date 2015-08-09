@@ -3,7 +3,7 @@ font-family: georgia;
 color: #333;
 }
 
-#container{
+.container{
   width: 400px;
   height: 510px;
   background: #ddd;
