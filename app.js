@@ -1,7 +1,7 @@
 
 // data initialization:
 
-var work = [
+var art = [
   {
     name:1,
     info: "lorem ipsum 1",
@@ -46,106 +46,119 @@ var work = [
     name:9,
     info: "lorem ipsum 9",
     pic: "life-drawings/20141002155505_001.jpg"
-  },
+  }
 ];
-
-
-
-
-var i = 1;
 
 // pseudo code.
 
-function CurrentPicture(piece, direction){
 
-
-  var insertImage = document.getElementById("picture");
-
-  if( insertImage.children.length > 0 ){
-    while ( insertImage.firstChild ) {
-      var imageNode = insertImage.firstChild;
-      insertImage.removeChild(imageNode);
-    }
-
-
-    console.log("remove pic");
-    console.log("there's " + insertImage.children.length + " image node currently here. ");
+/**
+ * @param {Node} container
+ * @param {Object[]} pictures
+ * @param {number} [opt_defaultPictureIndex=0]
+ * @constructor
+ */
+function Slider(container, pictures, opt_defaultPictureIndex) {
+  if (-1 !== this.initialized.indexOf(container)) {
+    throw new Error("You cannot deploy Slider in the same container twice");
+  } else {
+    this.initialized.push(container);
   }
 
+  this.container = container;
+  this.pictures = pictures;
+
+  var left = document.createElement("button");
+  var right = document.createElement("button");
+  var arrow = document.createElement("div");
+  var subject = document.createElement("div");
+  var frame = document.createElement("div");
+  var picture = document.createElement("div");
+
+  this.picture = picture;
+  picture.setAttribute("class", "picture");
+  frame.appendChild(picture);
+
+  left.innerHTML = "left";
+  left.setAttribute("class", "left");
+  container.appendChild(left);
+  right.innerHTML = "right";
+  right.setAttribute("class", "right");
+  container.appendChild(right);
+  arrow.setAttribute("class", "arrow");
+  container.appendChild(arrow);
+  this.subject = subject;
+  subject.setAttribute("class", "subject");
+  container.appendChild(subject);
+  frame.setAttribute("class", "frame");
+  container.appendChild(frame);
 
 
-  var insert = document.getElementById("subject");
-  insert.innerHTML = piece.name;
+  this.defaultPictureIndex = opt_defaultPictureIndex || 0;
+  this.currentPictureIndex = this.defaultPictureIndex;
 
-  // create and append image from data initialization
-  // can probably abstract this away.
-  var currentImage = document.createElement("img");
-  currentImage.classList.add("images");
-  currentImage.setAttribute("src", piece.pic);
-  insertImage.appendChild(currentImage);
+  this.listeners = [
+    {element: left, fn: this.clickLeftHandler.bind(this)},
+    {element: right, fn: this.clickRightHandler.bind(this)},
+    {element: subject, fn: this.clickSubjectHandler.bind(this)}
+  ];
+  this.listeners.forEach(function(listener) {
+    listener.element.addEventListener("click", listener.fn);
+  });
 
-
-  if(i === 0){
-    i = 1;
-    return;
-  }
-
-
-  // incrementation and decrementation
-  if(direction === "up"){
-    i+=1;
-  }else{
-    i-=1;
-  }
-
-
-
-  // closure
-  return function(){
-    //insert.removeChild(childNode[0]);
-  //  insert.innerHTML = piece.info;
-    insert.innerHTML = work[i].info;
-  }
+  this.switchPictureTo(pictures[this.currentPictureIndex]);
 }
 
+Slider.prototype.initialized = [];
 
-
-// this saves the argument at the moment it was passed
-// into memory.
-// var description = CurrentPicture(work[i]);
-
-// re-cap on closures.
-var description = CurrentPicture(work[i]);
-
-// if user clicks on title , call the closure.
-// description();
-
-// event target elements.
-var
-  left = document.getElementById("left"),
-  right = document.getElementById("right"),
-  head = document.getElementById("subject");
-
-left.addEventListener("click",
- function(){
-   CurrentPicture(work[i]);
-   console.log(i);
- }
- );
-
-right.addEventListener("click",
-  function(){
-    CurrentPicture(work[i], "up");
-    console.log(i);
+Slider.prototype.clickLeftHandler = function() {
+  if (0 === this.currentPictureIndex) {
+    this.currentPictureIndex = this.pictures.length - 1;
+  } else {
+    this.currentPictureIndex -= 1;
   }
-);
+  this.switchPictureTo(this.pictures[this.currentPictureIndex]);
+  console.log(this.currentPictureIndex);
+};
 
-head.addEventListener("click",
-  function(){
-    description();
-    console.log(i);
+Slider.prototype.clickRightHandler = function() {
+  if (this.currentPictureIndex === this.pictures.length - 1) {
+    this.currentPictureIndex = 0;
+  } else {
+    this.currentPictureIndex += 1;
   }
-);
+  this.switchPictureTo(this.pictures[this.currentPictureIndex]);
+  console.log(this.currentPictureIndex);
+};
 
+Slider.prototype.clickSubjectHandler = function() {
+  this.currentPictureIndex = this.defaultPictureIndex;
+  this.switchPictureTo(this.pictures[this.currentPictureIndex]);
+  console.log(this.pictures[this.currentPictureIndex]);
+};
+
+Slider.prototype.switchPictureTo = function(piece) {
+  this.subject.innerHTML = piece.name;
+
+  // update current image
+  if (this.currentImage) {
+    this.picture.removeChild(this.currentImage);
+  }
+  this.currentImage = document.createElement("img");
+  this.currentImage.setAttribute("class", "images");
+  this.currentImage.setAttribute("src", piece.pic);
+  this.picture.appendChild(this.currentImage);
+};
+
+Slider.prototype.destroy = function() {
+  this.listeners.forEach(function(listener) {
+    listener.element.removeEventListener("click", listener.fn);
+  });
+  this.container.innerHTML = "";
+  this.initialized.splice(this.initialized.indexOf(this.container), 1);
+};
+
+var slider_instance_one = new Slider(document.getElementById("container-first"), art, 1);
+var slider_instance_two = new Slider(document.getElementById("container-second"), art);
 
 // add class link to stylesheet.
